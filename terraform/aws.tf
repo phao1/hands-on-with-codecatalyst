@@ -9,7 +9,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket         = "299878581976-eu-west-1-terraform-state"
+    bucket         = "204521158369-eu-west-1-terraform-state"
     key            = "devops-playground.tfstate"
     region         = "eu-west-1"
   }
