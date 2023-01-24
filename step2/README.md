@@ -79,16 +79,47 @@ To make the files installed in our first container available to the second, we n
 (***Again check indents***)
 4. Save, stage, commit and sync our changes back to the repo (as above)
 5. Check the workflow and we should see a new run which should complete successfully this time.
+6. If you can't get the workflow working, use [example_workflow_with_artifacts.yaml](example_workflow_with_artifacts.yaml)
+
+## Adding tests
+Now that we have our installed tools available, we can proceed to analyse our lambda and terraform code. 
+
+The lambda code is stored in `src/`, unit tests in `src/unittests` and terraform in `terraform`. We will use [bandit](https://pypi.org/project/bandit/) to check our python code for vulnerabilities, [tfsec](https://aquasecurity.github.io/tfsec) to check out terraform, and run unit tests to validate our lambda code.
+
+Let's add those to our workflow.
+
+1. Open the workflow file in our editor if it's not already (_hint, it's in `.codecatalyst/workflows`_)
+2. Scroll down to the `Steps` section in the test action.
+3. Replace these lines
+```
+        - Run: |
+            echo "Check pytest is installed"
+            python -m pytest --help
+```
+with
+```
+        - Run: |
+            echo "Running unit tests"
+            python -m pytest
+            true
+        - Run: |
+            echo "Running bandit vulnerability scanner"
+            bandit -r . --format sarif --output junit/bandit.sarif
+            true    # Ignore failures flagged by bandit
+        - Run: |
+            echo "Installing and running tfsec"
+            cd ../terraform
+            wget https://github.com/aquasecurity/tfsec/releases/download/v1.28.1/tfsec-linux-amd64 -O tfsec
+            chmod +x ./tfsec
+            ./tfsec . --format sarif > ../src/junit/tfsec.sarif
+            true
+```
+*The first command runs pytest, the second bandit, and the 3rd downloads `tfsec` and then executes it.*
+
+4. Save, stage, commit and sync our changes back to the repo (as above)
+5. Check the workflow and we should see a new run which should complete successfully this time.
+6. If you can't get the workflow working, use [example_workflow_with_tests.yaml](example_workflow_with_tests.yaml)
 
 
 
-
-
-
- - accessing a dev environment
- - editing workflow via dev environment & Cloud9
- - fixing missing files with artifacts
- - adding tests
- - running workflow
-
-[(_back to main readme_)](../README.md)
+[(Jump to the 3rd exercise)](../step3/README.md) or [(_back to main readme_)](../README.md)
