@@ -27,6 +27,17 @@ as example code will be provided.
  - adding tests
  - fixing missing files with artifacts
  - running workflow
+ - reports
+ - building package
 
 ### Step 3. Deploying code to AWS
  - adding workflow step
+ - installing terraform
+ - terraform init and plan
+ - deploy
+ - testing live (use restninja.io or https://www.site24x7.com/tools/restapi-tester.html)
+
+
+# Final Architecture
+The final deployment will look something like
+![deployed architecture](./images/architecture.png)

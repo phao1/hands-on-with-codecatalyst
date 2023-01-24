@@ -1,0 +1,39 @@
+schemaVersion: 2.0.0
+metadata:
+  name: aws-universal
+  version: 1.0.1
+  displayName: AWS Universal
+  description: Stack with AWS Universal Tooling
+  tags: ["aws", "al2"]
+  projectType: "aws"
+components:
+  - name: aws-runtime
+    container:
+      image: public.ecr.aws/aws-mde/universal-image:latest
+      mountSources: true
+      volumeMounts:
+        - name: docker-store
+          path: /var/lib/docker
+  - name: docker-store
+    volume:
+      size: 16Gi
+commands:
+  - id: install dev tools via pip
+    exec:
+      commandLine: python3 -m pip install --user -r env_requirements.txt 
+      workingDir: /projects/lambda_function
+      component: aws-runtime
+  - id: install moto library
+    exec:
+      commandLine: python3 -m pip install --user moto
+      workingDir: /projects/lambda_function
+      component: aws-runtime
+  - id: install libraries from requirements.txt
+    exec:
+      commandLine: python3 -m pip install --user -r requirements.txt
+      workingDir: /projects/lambda_function/src
+      component: aws-runtime
+events:
+  postStart:
+    - install
+    
