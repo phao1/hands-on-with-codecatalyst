@@ -28,7 +28,7 @@ For this walkthrough, we have created a CodeCatalyst Space with projects for eac
     cd src
     pip install --user -r requirements.txt
 ```
-_This YAML code defines what actions this step will carry out_
+_This YAML code defines what actions this step will carry out - in this case we're going to install any python libraries we need for our tools and code_
 12.  Click on `Outputs`, scroll down Reports and click the toggle. _This disables automatic discovery of reports (our sample code includes some example test reports)_
 13.  Click the `X` to close the action. Click `Validate` at the top of the screen and make sure it comes back with valid code.
 14.  Click `Commit` at the top of the screen.
