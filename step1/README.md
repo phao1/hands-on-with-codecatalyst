@@ -40,7 +40,7 @@ _This YAML code defines what actions this step will carry out - in this case we'
 15.   After a short delay, you'll be returned to the main Workflow screen and you should see a Run listed under your workflow name. You'll see the run has an id, a reference to the commit id, repo and branch.
 16.   Click on the id (_something like `Run-d0ca1`_), and you'll see a visual representation of the run. Click on the action you added
 17. Review the `Logs` section.   
-18. Click on `Overiew` to return the project summary.
+18. Click on `Overview` to return the project summary.
 
 **Congratulations, you've created and executed your first workflow in CodeCatalyst.**
 
