@@ -30,6 +30,7 @@ Now that we're in a project, let's create a workflow.
 ![properties](../images/workflow-properties.png)
 
 4. The title of the workflow should now be Example. Click on the blue box in the center of the screen with the words `Source` and `Triggers`.
+
 ![trigger](../images/workflow-trigger.png)
 
 5. Click on the pen to the right of `Push`. Click `Remove` button next to `main`. Click the `Update` button.
@@ -42,8 +43,11 @@ Now that we're in a project, let's create a workflow.
 ![action1](../images/workflow-action-2.png)
 
 ![action1](../images/workflow-add.png)
+
 7. In the `Inputs` section, you'll see `WorkflowSource` is already in place which means we'll use the project repo. Click on `Configuration` and change the action name to `Init`, by clicking on the pen, changing the name and clicking on the tick.
+
 ![action1](../images/workflow-action-name.png)
+
 8. Scroll down to Shell commands and paste this code:
 ```
 - Run: |
@@ -57,17 +61,21 @@ Now that we're in a project, let's create a workflow.
 9. Click the `X` to close the action.
 
 ![close workflow](../images/workflow-close-action.png)
+
 10. Click `Validate` at the top of the screen and make sure it comes back with valid code.
 11. Click `Commit` at the top of the screen.
 
 ![Commit](../images/workflow-commit.png)
+
   * Specify a name to use for the yaml file that will hold the workflow definition
   *   Add an appropriate commit message
   *   Click on repo dropdown and select the repo
   *   Click `main` for the branch name from the drop-down
   *   Click on the `Commit` button.
 12. After a short delay, you'll be returned to the main Workflow screen and you should see a Run listed under your workflow name. You'll see the run has an id, a reference to the commit id, repo and branch.
+
 ![workflow run](../images/workflow-run-1.png)
+
 13. Click on the id (_something like `Run-d0ca1`_), and you'll see a visual representation of the run. Click on the action you added
 14. Review the `Logs` section.
 15. Click on `Overview` to return the project summary.
