@@ -28,13 +28,19 @@ Now that we're in a project, let's create a workflow.
 3. Click `Workflow properties` on the top RHS of the screen, under the `Commit` button. Change the workflow to `Example`, then click the tick. Click the `X` to close the properties.
 
 ![properties](../images/workflow-properties.png)
+
 4. The title of the workflow should now be Example. Click on the blue box in the center of the screen with the words `Source` and `Triggers`.
 ![trigger](../images/workflow-trigger.png)
+
 5. Click on the pen to the right of `Push`. Click `Remove` button next to `main`. Click the `Update` button.
+
 ![trigger](../images/trigger-branch.png)
+
 6. Click on the `+ Actions` underneath the name of the workflow. Click on `Build`. Click `Add to workflow`
 ![action1](../images/workflow-action-1.png)
+
 ![action1](../images/workflow-action-2.png)
+
 ![action1](../images/workflow-add.png)
 7. In the `Inputs` section, you'll see `WorkflowSource` is already in place which means we'll use the project repo. Click on `Configuration` and change the action name to `Init`, by clicking on the pen, changing the name and clicking on the tick.
 ![action1](../images/workflow-action-name.png)
