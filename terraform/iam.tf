@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "lambda_ddb_policy" {
-  name        = "policy_panda_${var.project_name}_ddb"
+  name_prefix = "panda_ddb_policy"
   path        = "/"
   description = "Allow access to DDB table"
 
@@ -19,7 +19,7 @@ resource "aws_iam_policy" "lambda_ddb_policy" {
 }
 
 resource "aws_iam_role" "lambda_execution_role" {
-  name = "${var.project_name}-demo-lambda-role"
+  name_prefix = "codecatalyst-demo-lambda-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
