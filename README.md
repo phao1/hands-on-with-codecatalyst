@@ -5,8 +5,14 @@ In this playground, we'll be exploring [Amazon CodeCatalyst](https://codecatalys
 
 We'll walk through various components of CodeCatalyst and try to deploy some python code, building a pipeline in CodeCatalyst to test and deploy the code as an AWS Lambda using Terraform.
 
-## Accessing the playground
-Assuming you registered for the PlayGround, you should be able to log in to https://lab.devopsplayground.org/ using your meetup username. (Internal GlobalLogic UK&I users should be able to access with 'firstname lastname' if you accepted the internal invite.)
+## Initial Setup
+As long as you registered for the PlayGround through MeetUp (or if you're internal to GlobalLogic, you responded to the email invite), you should be able to login to https://lab.devopsplayground.org/. In the username field, enter your meetup 'display name' or if you're internal, use 'firstname lastname'. When you click the `Submit` button, you'll be shown some details as shown below:
+![panda-login](./images/panda-login.png)
+
+For the walkthrough, we'll ask you to login to https://codecatalyst.aws/login using the Login email and Password from the provided details. You'll also be allocated a 'panda name' which you can use throughout the workshop - this is the part of the email after the `+`, so if your login email was `devops.playground+chilled-panda@gmail.com`, then your panda name is `chilled-panda`.
+
+Before the session started, we've created a CodeCatalyst Space and allocated each of you an individual project which uses your panda-name, and in each project, we've created a repository which contains some code we'll us throughout the project. The repository is cloned from https://github.com/DevOpsPlayground/hands-on-with-codecatalyst. If you want to follow along, this README file is available in the repo [here](https://github.com/DevOpsPlayground/hands-on-with-codecatalyst/blob/main/README.md).
+
 
 ## Agenda
 The session should take approximately 60 minutes. Attendees do not need to have any previous experience with CodeCatalyst, Python or Terraform as example code will be provided.
