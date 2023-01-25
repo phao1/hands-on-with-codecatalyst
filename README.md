@@ -15,27 +15,33 @@ Before the session started, we've created a CodeCatalyst Space and allocated eac
 
 
 ## Agenda
-The session should take approximately 60 minutes. Attendees do not need to have any previous experience with CodeCatalyst, Python or Terraform as example code will be provided.
+The session should take approximately 60 minutes. Attendees do not need to have any previous experience with CodeCatalyst, Python or Terraform as example code will be provided in the repo we've created in the project.
 
 ### [Step 1. Creating a workflow to build our environment (_click_)](step1/README.md)
  - exploring CodeCatalyst
  - creating a workflow
  - adding build action
- - running the workflow
+ - running the workflow  
+
+---
 
 ### [Step 2. Testing our code (_click_)](step2/README.md)
- - accessing a dev environment
- - editing workflow via dev environment & Cloud9
- - fixing missing files with artifacts
- - adding tests
+ - adding a test action to the workflow
+ - huh - it didn't work?
+ - adding test steps
+ - capturing test reports
  - running workflow
 
-### [Step 3. Capturing test results (_click_)](step3/README.md)
- - adding reports
- - setting success criteria
+---
+### [Step 3. Dev environments (_click_)](step3/README.md)
+ - what's a dev environment
+ - creating a dev environment
+ - using the dev environment
+ - VSCode demo
 
+---
 ### [Step 4. Deploying code to AWS (_click_)](step4/README.md)
- - adding workflow step
+ - adding workflow step via the dev environment
  - installing terraform
  - terraform init and plan
  - deploy
