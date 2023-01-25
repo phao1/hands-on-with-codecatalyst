@@ -26,6 +26,7 @@ Now that we're in a project, let's create a workflow.
 2. Click `Create workflow` button, and change the selector from `YAML` to `Visual` .
 ![create-workflow](../images/workflow-visual.png)
 3. Click `Workflow properties` on the top RHS of the screen, under the `Commit` button. Change the workflow to `Example`, then click the tick. Click the `X` to close the properties.
+
 ![properties](../images/workflow-properties.png)
 4. The title of the workflow should now be Example. Click on the blue box in the center of the screen with the words `Source` and `Triggers`.
 ![trigger](../images/workflow-trigger.png)
@@ -48,9 +49,11 @@ Now that we're in a project, let's create a workflow.
     pip install --user -r requirements.txt
 ```
 9. Click the `X` to close the action.
+
 ![close workflow](../images/workflow-close-action.png)
 10. Click `Validate` at the top of the screen and make sure it comes back with valid code.
 11. Click `Commit` at the top of the screen.
+
 ![Commit](../images/workflow-commit.png)
   * Specify a name to use for the yaml file that will hold the workflow definition
   *   Add an appropriate commit message
@@ -62,6 +65,7 @@ Now that we're in a project, let's create a workflow.
 13. Click on the id (_something like `Run-d0ca1`_), and you'll see a visual representation of the run. Click on the action you added
 14. Review the `Logs` section.
 15. Click on `Overview` to return the project summary.
+
 ![workflow run](../images/workflow-overview.png)
  
 
