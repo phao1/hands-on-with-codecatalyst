@@ -7,6 +7,7 @@ We'll walk through various components of CodeCatalyst and try to deploy some pyt
 
 ## Initial Setup
 As long as you registered for the PlayGround through MeetUp (or if you're internal to GlobalLogic, you responded to the email invite), you should be able to login to https://lab.devopsplayground.org/. In the username field, enter your meetup 'display name' or if you're internal, use 'firstname lastname'. When you click the `Submit` button, you'll be shown some details as shown below:
+
 ![panda-login](./images/panda-login.png)
 
 For the walkthrough, we'll ask you to login to https://codecatalyst.aws/login using the Login email and Password from the provided details. You'll also be allocated a 'panda name' which you can use throughout the workshop - this is the part of the email after the `+`, so if your login email was `devops.playground+chilled-panda@gmail.com`, then your panda name is `chilled-panda`.
