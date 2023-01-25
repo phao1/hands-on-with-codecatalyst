@@ -102,17 +102,25 @@ Actions:
       - Build_Phase
   Deploy_Terraform_to_DEV:
     Identifier: aws/build@v1
-    Inputs:
-      Sources:
-        - WorkflowSource
     Outputs:
       AutoDiscoverReports:
         Enabled: true
         ReportNamePrefix: rpt
+    Compute:
+      Type: EC2
+    Environment:
+      Connections:
+        - Role: CodeCatalystDeploymentRole
+          Name: "204521158369"
+      Name: Dev
+    DependsOn:
+      - Test_Phase
+    Inputs:
+      Sources:
+        - WorkflowSource
     Configuration:
       Steps:
-        - Run: |
-            echo "Hello, World! - ready to deploy"
+        - Run: echo "Hello, World! - ready to deploy"
         - Run: |
             echo "Installing Terraform"
             sudo yum install -y yum-utils shadow-utils
@@ -128,12 +136,3 @@ Actions:
         - Run: |
             echo "Running Terraform Apply"
             terraform apply --auto-approve -no-color
-    Compute:
-      Type: EC2
-    Environment:
-      Connections:
-        - Role: CodeCatalystDeploymentRole
-          Name: "299878581976"
-      Name: DevTest
-    DependsOn:
-      - Test_Phase
