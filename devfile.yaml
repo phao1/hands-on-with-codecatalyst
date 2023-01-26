@@ -18,22 +18,18 @@ components:
     volume:
       size: 16Gi
 commands:
-  - id: install dev tools via pip
+  - id: install_env
     exec:
       commandLine: python3 -m pip install --user -r env_requirements.txt 
       workingDir: /projects/lambda_function
       component: aws-runtime
-  - id: install moto library
-    exec:
-      commandLine: python3 -m pip install --user moto
-      workingDir: /projects/lambda_function
-      component: aws-runtime
-  - id: install libraries from requirements.txt
+  - id: install_code_libs
     exec:
       commandLine: python3 -m pip install --user -r requirements.txt
       workingDir: /projects/lambda_function/src
       component: aws-runtime
 events:
   postStart:
-    - install
+    - install_env
+    - install_code_libs
     

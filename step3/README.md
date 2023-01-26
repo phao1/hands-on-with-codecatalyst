@@ -1,63 +1,44 @@
 # Exercise 3
 [(_back to main readme_)](../README.md)
 
-So far we've created an action to build our environment, and one to test it.
-However, while we can see that we've run some tests, we don't know if they worked. In this exercise, we'll capture the test data we generated and use it set success criteria.
+So now we have a running workflow that setups a test environment, and performs various tests to make sure our code is good.
 
-We'll continue to edit in the IDE.
+Before we try and deploy this to an AWS account, let's look at dev environments.
 
-1. Open the tab containing your IDE, or click `Code` in the navigation column, then `Dev Environments`. Each project should have a single dev environment called `coderepo/main`. Click on the link in the IDE column titled `Resume in AWS Cloud9`.
-2. Open the workflow under `.codecatalyst/workflows` in the editor.
-3. Scroll down to the `Outputs` section in the test action. It should look like
-```
-    Outputs:
-      AutoDiscoverReports:
-        Enabled: false
-        ReportNamePrefix: rpt
-```
-4. Add these sections directly underneath - first, let's grab the results of our unittests (add these drectly underneath the lines above):
-```
-      Reports:
-        TestReport:
-          Format: JUNITXML
-          IncludePaths:
-            - src/junit/results.xml
-          SuccessCriteria:
-            PassRate: 100
-        CoverageReport:
-          Format: COBERTURAXML
-          IncludePaths:
-            - src/junit/coverage.xml
-          SuccessCriteria:
-            LineCoverage: 90
-```
-5. Then we'll grab the results from bandit
-```
-        PythonVulnerabilityReport:
-          Format: SARIFSCA
-          IncludePaths:
-            - src/junit/bandit.sarif
-          SuccessCriteria:
-            Vulnerabilities:
-              Severity: HIGH
-              Number: 0
-```
-6. And finally, we'll capture our results from tfsec
-```
-        TerraformVulnerabilityReport:
-          Format: SARIFSCA
-          IncludePaths:
-            - src/junit/tfsec.sarif
-          SuccessCriteria:
-            Vulnerabilities:
-              Severity: HIGH
-              Number: 0
-```
-7. Save your workflow, stage. commit and sync the changes back to our repository.
-8. This will trigger a new run of our workflow (possibly after a short delay). Monitor this until it completes.
-9. Once complete, review the `Reports` section of the run where you will see 4 reports.
-10. If you can't get the workflow working, use [example_workflow_with_test_reports.yaml](example_with_test_reports.yaml)
+## What is a dev environment
+One of the challenges development teams face is making sure that all team members have a consistent development environment - this leads to the 'but it works on my machine' comments ;)
 
+CodeCatalyst dev environments aim to solve this by giving a standardised, cloud-based environment where everyone has the same configuration. 
 
+This is available via either the Cloud9 IDE, or there are integrations to several popular local IDEs such as Visual Studio Code.
+
+## Creating a dev environment
+Let's create a Cloud9 based dev environment ...
+
+1. From the navigation panel on the left hand side of the CodeCatalyst console, click the `Code` dropdown and select `Dev Environments`.
+
+![navpange](../images/ex3-navpane.png)
+
+2. Click on one of the `Create Dev Environment` buttons
+
+![create-devenv](../images/ex3-createdev.png)
+
+3. Choose `AWS Cloud9` from the dropdown. You'll see a screen where you can specify the options for the environment. Make sure that the repository is set to `coderepo` and `work in existing branch` is selected. Click `Create` at the bottom of the form
+
+![options](../images/ex3-options.png)
+
+4. This will create a Cloud9 dev environment which includes a copy of the code from our repository. After short delay, this should open a new tab with access to the dev environment.
+5. Close the `Getting started` window and click on `Don't show again` in the window about the dev environment settings.
+6. You'll now see a screen looking like below
+
+![ide-screen](../images/ex3-windows.png)
+
+This has several sections
+   * On the left, there is an explorer window showing the files available in the IDE. Our repo `coderepo` should be showing. There is also an icon here which allows us to interact with git, staging and committing files.
+   * The main part of the screen is the editor section. We can double click a file in the explorer to open it in the editor, and we can have a number of files open at the same time.
+   * There is a shell terminal at the bottom where we can run command line tools.
+   * Finally at the bottom of the screen, is a status section showing us the state of our local git repository compared to the main repo held in CodeCatalyst.
+
+It is also possible to link to local IDE such as Visual Studio Code. In the workshop, we'll demonstrate this but for more info, visit https://docs.aws.amazon.com/codecatalyst/latest/userguide/devenvironment-using-ide.html
 
 [(Jump to the 4th exercise)](../step4/README.md) or [(_back to main readme_)](../README.md)

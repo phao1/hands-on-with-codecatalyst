@@ -206,3 +206,5 @@ with
 ![reports](../images/ex2-reports.png)
 
 **Hopefully, everything has worked has expected, please shout if not. Otherwise, let's move to step 3 and try deploying the code and infrastructure to an AWS account.**
+
+[(Jump to the 3rdd exercise)](../step3/README.md) or [(_back to main readme_)](../README.md)
