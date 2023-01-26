@@ -14,7 +14,7 @@ Actions:
         - WorkflowSource
     Outputs:
       AutoDiscoverReports:
-        Enabled: true
+        Enabled: false
         ReportNamePrefix: rpt
       Artifacts:
         - Name: pythonLibs
