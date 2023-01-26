@@ -29,7 +29,7 @@ Now that we're in a project, let's create a workflow.
 
 ![properties](../images/workflow-properties.png)
 
-4. The title of the workflow should now be Example. Click on the blue box in the center of the screen with the words `Source` and `Triggers`.
+4. The title of the workflow should now be `Example`. Click on the blue box in the center of the screen with the words `Source` and `Triggers`.
 
 ![trigger](../images/workflow-trigger.png)
 

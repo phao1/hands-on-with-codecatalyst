@@ -1,13 +1,76 @@
 # Exercise 2
+
 [(_back to main readme_)](../README.md)
 
-We've created a workflow which has executed to build our initial environment - ***Please shout if you didn't get a successful run before we continue***.
-Now we're going to try using the inbuilt IDE and edit our workflow through this.
-1. Click `Code` in the navigation column, then `Dev Environments`. Each project should have a single dev environment called `coderepo/main`. Click on the link in the IDE column titled `Resume in AWS Cloud9`
-2. This will start our IDE, and after a delay as the environment initialises we should be placed in an IDE. The ide should have 3 panes, a file explorer on the left, an editor space at the top, and a terminal at the bottom.
-3. You should be able to see the name of our repo in the explorer near the top left, and if we change into the terminal at the bottom, we can enter the command `cd coderepo`.
-4. Let's create a new branch - type `git checkout -b new_branch_name` replacing `new_branch_name` with an appropriate name.
-5. Using the explorer pane, expand the coderepo folder and click through `.codecatalyst/workflows` until we see the yaml file we created in the previous exercise to house our workflow. Double click on the name to open the file in the editor.
+We've created a workflow which has executed to build our initial environment
+***Please shout if you didn't get a successful run before we continue***.
+Now we're going to add an action to perform some tests on our python code.
+---
+1. Click `CI/CD` in the navigation column, then `Workflows`. You'll be able to see the workflow `Example` we created in the previous step. Click `Actions`, and from the dropdown, choose `Edit`.
+
+![edit](../images/ex-2-workflow-edit.png)
+
+2. Again, this will open in the YAML editor, which we will use this time. Scroll down to the bottom of the editor
+
+![ide](../images/ex2-yaml-editor.png)
+
+3. Paste the following text into the editor below the line `Type: EC2`
+```
+  Test_Phase:
+    Identifier: aws/managed-test@v1
+    Inputs:
+      Sources:
+        - WorkflowSource
+    Outputs:
+      AutoDiscoverReports:
+        Enabled: false
+        ReportNamePrefix: rpt
+    Configuration:
+      Steps:
+        - Run: |
+            python -m pytest --help
+    Compute:
+      Type: EC2
+    DependsOn:
+      - Init
+```
+4. Click on `Validate` at the top of the screen to ensure our code is ok.
+5. Click `Commit` at the top of the screen.
+
+![Commit](../images/workflow-commit.png)
+
+  * Specify a name to use for the yaml file that will hold the workflow definition
+  *   Add an appropriate commit message
+  *   Click on repo dropdown and select the repo
+  *   Click `main` for the branch name from the drop-down
+  *   Click on the `Commit` button.
+6. After a short delay, you'll be returned to the main Workflow screen and you should see a new step for the test phase, and some information about the workflow. Click on `Runs`
+
+![first run](../images/ex2-first-run.png)
+
+7. Check in either `Active Runs` or `Run history` and you should see a run that is in progress, or just completed. Find the latest run and click on the run id to view the results.
+
+![run-history](../images/ex2-first-run-history.png)
+
+1. Once you've opened the run, wait until the test phase is showing as failed.
+
+![test-complete](../images/ex2-test-phase-failure.png)
+
+9. Click on the `Test_Phase` box to open the details. You should see that the action failed at the python step. Click on the arrow next to the step to open it and see the error message.
+
+![failure-details](../images/ex2-failure-details.png)
+
+10. You should see the step has failed due to python not being able to find the `pytest` library.
+
+![step-details](../images/ex2-failure-step-details.png)
+
+---
+
+## So why did we fail?
+When CodeCatalyst runs a new action, each one opens in a separate container. This means that any files generated will be lost unless we explicity archive them and transfer them - so let's do that.
+
+
+
 
 ## Part 1 - check our environment.
 Let's add a new action to our workflow to check that the environment we built is in place, and then we'll use it to test our python code for the lambda we'll deploy.
