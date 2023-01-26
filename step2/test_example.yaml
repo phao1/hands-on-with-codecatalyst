@@ -8,88 +8,49 @@ Triggers:
 # Required - Define action configurations.
 Actions:
   Init:
-    # Identifies the action. Do not modify this value.
     Identifier: aws/build@v1
-
-    # Specifies the source and/or artifacts to pass to the action as input.2
     Inputs:
-      # Optional
       Sources:
-        - WorkflowSource # This specifies that the action requires this Workflow as a source
-
+        - WorkflowSource
     Outputs:
-      # Optional; Automatically discover reports for popular test frameworks
       AutoDiscoverReports:
         Enabled: true
-        # Use as prefix for the report files
         ReportNamePrefix: rpt
       Artifacts:
         - Name: pythonLibs
           Files:
             - /root/.local/**/*
-    # Defines the action's properties.
     Configuration:
-      # Required - Steps are sequential instructions that run shell commands
       Steps:
-        - Run: |
+        - Run: |-
             echo "Install required environment libraries on ${HOSTNAME}"
             pip install --user -r env_requirements.txt
-        - Run: |
+        - Run: |-
             echo "Install required code libraries"
             cd src
             pip install --user -r requirements.txt
+    Compute:
+      Type: EC2
   Test_Phase:
     Identifier: aws/managed-test@v1
     Inputs:
       Sources:
         - WorkflowSource
-      Artifacts:
-        - pythonLibs
     Outputs:
       AutoDiscoverReports:
         Enabled: false
         ReportNamePrefix: rpt
-      Reports:
-        TestReport:
-          Format: JUNITXML
-          IncludePaths:
-            - src/junit/results.xml
-          SuccessCriteria:
-            PassRate: 100
-        CoverageReport:
-          Format: COBERTURAXML
-          IncludePaths:
-            - src/junit/coverage.xml
-          SuccessCriteria:
-            LineCoverage: 90
-        PythonVulnerabilityReport:
-          Format: SARIFSCA
-          IncludePaths:
-            - src/junit/bandit.sarif
-          SuccessCriteria:
-            Vulnerabilities:
-              Severity: HIGH
-              Number: 0
-        TerraformVulnerabilityReport:
-          Format: SARIFSCA
-          IncludePaths:
-            - src/junit/tfsec.sarif
-          SuccessCriteria:
-            Vulnerabilities:
-              Severity: HIGH
-              Number: 0
+
     Configuration:
       Steps:
         - Run: |
             echo "Copying artifacts from build on ${HOSTNAME}"
             mv ${CATALYST_SOURCE_DIR_pythonLibs}/root/.local ~
             export PATH=$PATH:$HOME/.local/bin
-            ls -lR $HOME/.local/bin
             cd src
         - Run: |
             echo "Running unit tests"
             python -m pytest
-            true
         - Run: |
             echo "Running bandit vulnerability scanner"
             bandit -r . --format sarif --output junit/bandit.sarif
@@ -101,6 +62,7 @@ Actions:
             chmod +x ./tfsec
             ./tfsec . --format sarif > ../src/junit/tfsec.sarif
             true
+            
     Compute:
       Type: EC2
     DependsOn:

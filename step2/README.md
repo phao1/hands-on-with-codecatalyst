@@ -5,6 +5,9 @@
 We've created a workflow which has executed to build our initial environment
 ***Please shout if you didn't get a successful run before we continue***.
 Now we're going to add an action to perform some tests on our python code.
+
+We'll be pasting various commands - these are available in the `README.me` in the `step2` folder of the repository.
+
 ---
 1. Click `CI/CD` in the navigation column, then `Workflows`. You'll be able to see the workflow `Example` we created in the previous step. Click `Actions`, and from the dropdown, choose `Edit`.
 
@@ -67,104 +70,61 @@ Now we're going to add an action to perform some tests on our python code.
 ---
 
 ## So why did we fail?
-When CodeCatalyst runs a new action, each one opens in a separate container. This means that any files generated will be lost unless we explicity archive them and transfer them - so let's do that.
+When CodeCatalyst runs a new action, each one opens in a separate container. This means that any files generated will be lost unless we explicitly archive them and transfer them to the new action - so let's do that.
 
+1. At the top of the screen, click `Edit Workflow`. (If you exited the run, click on `CI/CD`, `Workflows` and select `Edit` from the `Actions` dropdown next to the workflow.)
 
+![edit workflow](../images/ex2-edit-workflow.png)
 
-
-## Part 1 - check our environment.
-Let's add a new action to our workflow to check that the environment we built is in place, and then we'll use it to test our python code for the lambda we'll deploy.
-1. Scroll to the end of the workflow file, which should have the shell commands you previously defined.
-2. Paste the following code
-```  
-  Test_Phase:
-    Identifier: aws/managed-test@v1
-    Inputs:
-      Sources:
-        - WorkflowSource
+2. In the workflow editor, scroll to the `Init` action and find the `Configuration` section. Just above is the `Outputs` section - select the `Outputs` section (this should be lines 15-18) and replace the text below
+```
     Outputs:
       AutoDiscoverReports:
-        Enabled: false
+        Enabled: true
         ReportNamePrefix: rpt
-    Configuration:
-      Steps:
-        - Run: |
-            echo "Check pytest is installed"
-            python -m pytest --help
-    Compute:
-      Type: EC2
-    DependsOn:
-      - Init
 ```
-***Make sure that the action in the `DependsOn` section uses the name of the action you defined in the first exercise.***
-1. We've now added a test section (_see the identifier_) which we'll use to perform some tests against the code, but for now we're just checking the one of the tools, pytest, we installed in the previous action is available.
-2. Save the file, either by `ctrl/cmd-s` or clicking `File > Save` in the menu at the top.
-3. We can now use either the terminal or the git ide to update the repo. For the `terminal`
-   1. In the terminal, enter the command `git status` and we should see that our modified file is listed in the `changes not staged for commit` section
-   2. Enter the command `git add` followed by the name of our file to stage it in git
-   3. Enter the command `git commit -m 'Added test phase'`
-4. To use the `git IDE`, 
-   1. Click on the small branch symbol in the navigator pane
-   2. Click the plus sign next to our modified file in the explorer
-   3. Enter a commit message
-   4. `ctrl+enter` or `cmd+enter` to record the message for the comit
-5. Click the small refresh symbol next to the branch name at the bottom of the screen to push our code back to the repository.
-6. In the previous browser tab, click `CI/CD` and `Workflow`. We should see a new run listed against the workflow in the new branch. Click the run name and monitor the `Logs` section.
-7. After a short period, we should see a red `x` next to the `pytest help` command.
-
-## Why did our run fail?
-Each action runs in a separate container, so when we installed the libraries and tools in the first action, they weren't visible in the second action's container.
-
-## How to fix.
-To make the files installed in our first container available to the second, we need to output an archive from the first file containing the library files (_held under /root/.local_), and then import that action in the 2nd action.
-
-1. In the IDE editor, scroll to the first action and enter the following under the `Autodiscovered Reports` under `Outputs` section, just above `Configuration`
+with
 ```
+    Outputs:
+      AutoDiscoverReports:
+        Enabled: true
+        ReportNamePrefix: rpt
       Artifacts:
         - Name: pythonLibs
           Files:
             - /root/.local/**/*
 ```
-(***Check the indentation***)
-2. Scroll down to our new test action, and just above `Outputs` paste
+3. This tells the `Init` action to create an artifact called `pythonLibs` containing all of the files under `/root/.local` which contains the Python library files we install as part of this step.
+4. Scroll down to the `Test_Phase` section, and replace the text in the `Inputs` section below (lines 32-34 approx.)
 ```
+    Inputs:
+      Sources:
+        - WorkflowSource
+```
+with
+```
+    Inputs:
+      Sources:
+        - WorkflowSource
       Artifacts:
         - pythonLibs
 ```
-3. In the `Steps` section of our 2nd action, add the new step above the existing one
+5. This tells the test phase to import the archive created in the first action. However, we need to do something to the archive to make it usable as it's not automatically placed where we need it.
+6. Scroll down to the `Run` section in `Test_Phase` which should be approximately line 40, and replace the text 
+```
+        - Run: |
+            python -m pytest --help
+```
+with
 ```
         - Run: |
             echo "Copying artifacts from build on ${HOSTNAME}"
             mv ${CATALYST_SOURCE_DIR_pythonLibs}/root/.local ~
             export PATH=$PATH:$HOME/.local/bin
             cd src
-```
-(***Again check indents***)
-4. Save, stage, commit and sync our changes back to the repo (as above)
-5. Check the workflow and we should see a new run which should complete successfully this time.
-6. If you can't get the workflow working, use [example_workflow_with_artifacts.yaml](example_workflow_with_artifacts.yaml)
-
-## Adding tests
-Now that we have our installed tools available, we can proceed to analyse our lambda and terraform code. 
-
-The lambda code is stored in `src/`, unit tests in `src/unittests` and terraform in `terraform`. We will use [bandit](https://pypi.org/project/bandit/) to check our python code for vulnerabilities, [tfsec](https://aquasecurity.github.io/tfsec) to check out terraform, and run unit tests to validate our lambda code.
-
-Let's add those to our workflow.
-
-1. Open the workflow file in our editor if it's not already (_hint, it's in `.codecatalyst/workflows`_)
-2. Scroll down to the `Steps` section in the test action.
-3. Replace these lines
-```
-        - Run: |
-            echo "Check pytest is installed"
-            python -m pytest --help
-```
-with
-```
         - Run: |
             echo "Running unit tests"
             python -m pytest
-            true
         - Run: |
             echo "Running bandit vulnerability scanner"
             bandit -r . --format sarif --output junit/bandit.sarif
@@ -177,12 +137,60 @@ with
             ./tfsec . --format sarif > ../src/junit/tfsec.sarif
             true
 ```
-*The first command runs pytest, the second bandit, and the 3rd downloads `tfsec` and then executes it.*
+7. The first set of commands will take the archive files and restore them to the area where we expect the libraries to be, and sets our execution path appropriately. 
+8. The remaining 3 steps will run
+   * a set of unittests against the python code using `pytest`,
+   * scan the python code for any vulnerabilities using an open source tool called `bandit`
+   * install a tool called `tfsec` which will scan the supplied terraform code for any vulnerabilities or security issues.
+3. Each of the tests will output test results into a folder called `junit`. We can now add a section to capture those reports, but first let's check our code is valid.
+4. Click on the `Validate` button at the top of the screen and check we get a message saying valid code.
 
-4. Save, stage, commit and sync our changes back to the repo (as above)
-5. Check the workflow and we should see a new run which should complete successfully this time.
-6. If you can't get the workflow working, use [example_workflow_with_tests.yaml](example_workflow_with_tests.yaml)
+![valid code](../images/ex2-valid-code.png)
 
+5. Scroll up to the `Outputs` section directly above the steps we just pasted in - this should be about lines 35-38. At the end of the line `ReportNamePrefix: rpt`, enter a new line and making sure you're at the start of the line, paste the following:
+```
+      Reports:
+        TestReport:
+          Format: JUNITXML
+          IncludePaths:
+            - src/junit/results.xml
+          SuccessCriteria:
+            PassRate: 100
+        CoverageReport:
+          Format: COBERTURAXML
+          IncludePaths:
+            - src/junit/coverage.xml
+          SuccessCriteria:
+            LineCoverage: 90
+        PythonVulnerabilityReport:
+          Format: SARIFSCA
+          IncludePaths:
+            - src/junit/bandit.sarif
+          SuccessCriteria:
+            Vulnerabilities:
+              Severity: HIGH
+              Number: 0
+        TerraformVulnerabilityReport:
+          Format: SARIFSCA
+          IncludePaths:
+            - src/junit/tfsec.sarif
+          SuccessCriteria:
+            Vulnerabilities:
+              Severity: HIGH
+              Number: 0
+```
 
+6. These 4 items will capture the outputs from the test tools in the appropriate format.
+7.  Click on the `Validate` button at the top of the screen and check we get a message saying valid code.
 
-[(Jump to the 3rd exercise)](../step3/README.md) or [(_back to main readme_)](../README.md)
+![valid code](../images/ex2-valid-code.png)
+
+8. Then click on `Commit` again and enter the details for the commit before clicking the `Commit` button. If you're having problems getting validated text, the full yaml is available in the `steps2/test_example.yaml` file - copy the text from there and replace the entire workflow text.
+9. After a short delay, you'll be returned to the main Workflow screen and you should see a new step for the test phase, and some information about the workflow. Click on `Runs`
+
+![first run](../images/ex2-first-run.png)
+
+7. Check in either `Active Runs` or `Run history` and you should see a run that is in progress, or just completed. Find the latest run and click on the run id to view the results.
+
+![run-history](../images/ex2-first-run-history.png)
+
