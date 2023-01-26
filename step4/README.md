@@ -5,9 +5,12 @@ We now have validated code in our workflow, we're ready for the final step which
 
 We have already linked an AWS account to our CodeCatalyst environment, so we can add a new action which will deploy our code.
 
-We'll continue to edit in the IDE.
+Since we have the IDE open, we'll edit in this to demonstrate how we can interact with our workflows.
 
-1. Open the tab containing your IDE, or click `Code` in the navigation column, then `Dev Environments`. Each project should have a single dev environment called `coderepo/main`. Click on the link in the IDE column titled `Resume in AWS Cloud9`.
+---
+
+1. If you look in the explorer pane, you'll see our `coderepo`. 
+![workflow](../images/ex4-terraform-aws.png)
 2. Open the file `coderepo/terraform/aws.tf` which should look like
 ```
 provider "aws" {
@@ -28,21 +31,31 @@ terraform {
 }
 ```
 3. Modify the `key` field and add your panda name in front of the key, so it looks like `funky-panda-devops-playground.tstate`
-4. Open your workflow file, scroll to the bottom and add this text
+4. Save the file, either by using a shortcut `CTRL-S` for windows, `Cmd-S` for macs, or using the `File` menu at the top of the screen and choosing `Save`.
+5. If you look in the explorer tab, you'll see a folder called `.codecatalyst/workflows`. Open that, and you should see a file called `Example.yaml`. This is our workflow definition file.
+ Open your workflow file, scroll to the bottom and add this text
 ```
   Deploy_Terraform_to_DEV:
     Identifier: aws/build@v1
-    Inputs:
-      Sources:
-        - WorkflowSource
     Outputs:
       AutoDiscoverReports:
         Enabled: true
         ReportNamePrefix: rpt
+    Compute:
+      Type: EC2
+    Environment:
+      Connections:
+        - Role: CodeCatalystDeploymentRole
+          Name: "204521158369"
+      Name: Dev
+    DependsOn:
+      - Test_Phase
+    Inputs:
+      Sources:
+        - WorkflowSource
     Configuration:
       Steps:
-        - Run: |
-            echo "Hello, World! - ready to deploy"
+        - Run: echo "Hello, World! - ready to deploy"
         - Run: |
             echo "Installing Terraform"
             sudo yum install -y yum-utils shadow-utils
@@ -54,30 +67,30 @@ terraform {
             terraform init
         - Run: |
             echo "Running Terraform Plan"
-            terraform plan
+            terraform plan -no-color
         - Run: |
             echo "Running Terraform Apply"
             terraform apply --auto-approve -no-color
-    Compute:
-      Type: EC2
+
 ```
-_This will add 5 steps that install terraform, initialise an environment, run a plan, and finally deploy the code_
-5. Now we need to connect this to our AWS environment. Add the following lines directly below the lines above
-```
-    Environment:
-      Connections:
-        - Role: CodeCatalystDeploymentRole
-          Name: "204521158369"
-      Name: DevTest
-```
-_This will allow the workflow to connect to the AWS Account `204521158369`, using the IAM Role `CodeCatalystDeploymentRole`
-6. Finally add a `DependsOn` section to ensure this runs after our test action is complete. Add these lines
-```
-    DependsOn:
-      - Test_Phase
-```
-***Make sure you use the name of your test action.***
-8. Again, save your changes, stage, commit and push.
+6. Save the file, either by using a shortcut `CTRL-S` for windows, `Cmd-S` for macs, or using the `File` menu at the top of the screen and choosing `Save`.
+7. We now need to push our changes back to the main repository. Click on the git icon in the explorer pane.
+
+![git](../images/ex4-git-icon.png)
+
+8. Click on the plus signs next to the `aws.tf` and `Example.yaml` files showing in the `changes` area, which will stage the files.
+9. Enter a message in the commit section and press `CTRL-Enter` or `Cmd-Enter` if you're on Windows or Mac respectively.
+10. If you look at the bottom of the screen in the status area, you should see that our local code is now 1 commit ahead of the main repo. Click on the `refresh` symbol to push the changes.
+11. Alternatively, we could have used standard `git add`, `git commit` and `git push` commands in the terminal.
+12. Change back to our original tab, and from the `CI/CD` area, choose `Workflows` and we should see a run in progress, or just completed.
+
+![workflow-run](../images/ex4-workflow-run.png)
+
+13. Click on the latest run-id, and monitor the progress.
+
+![deploy](../images/ex4-deploy-stage.png)
+
+14. 
 
 
 [(_back to main readme_)](../README.md)
