@@ -90,7 +90,24 @@ terraform {
 
 ![deploy](../images/ex4-deploy-stage.png)
 
-14. 
+14. Once the final stage is showing as complete, click on it to open the `Deploy_Terraform_to_DEV` action
+
+![open-deploy](../images/ex4-stage-complete.png)
+
+15. Click on the arrow next to the `Running Terraform Apply` stage to review the output from the terraform apply which deploys our code to the AWS account.
+
+![logs](../images/ex4-deploy-log.png)
+
+16. Scroll to the bottom of the apply output and you should see an `Outputs` section. Note the value shown in the `api_gateway_url` section.
+
+![outputs](../images/ex4/../ex4-deploy-output.png)
+
+17. You can either run a `curl api_gateway_url` (replacing api_gateway_url with the appropriate value ) via the dev environment, or use a tool such as https://restninja.io to test the API.
+
+![testing](../images/ex4-rest-ninja.png)
+
+
+**Congratulations - we've now tested and deployed python and Infrastructure as Code to an AWS account via CodeCatalyst.**
 
 
 [(_back to main readme_)](../README.md)

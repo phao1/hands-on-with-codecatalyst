@@ -1,20 +1,20 @@
----
 Name: Example
 SchemaVersion: "1.0"
+
+# Optional - Set automatic triggers.
 Triggers:
   - Type: Push
+
+# Required - Define action configurations.
 Actions:
-  Build_Phase:
+  Init:
     Identifier: aws/build@v1
     Inputs:
       Sources:
         - WorkflowSource
-      Variables:
-        - Name: table_name
-          Value: ddb_table
     Outputs:
       AutoDiscoverReports:
-        Enabled: true
+        Enabled: false
         ReportNamePrefix: rpt
       Artifacts:
         - Name: pythonLibs
@@ -22,15 +22,13 @@ Actions:
             - /root/.local/**/*
     Configuration:
       Steps:
-        - Run: |
+        - Run: |-
             echo "Install required environment libraries on ${HOSTNAME}"
             pip install --user -r env_requirements.txt
-        - Run: |
+        - Run: |-
             echo "Install required code libraries"
             cd src
             pip install --user -r requirements.txt
-        - Run: |
-            env | sort
     Compute:
       Type: EC2
   Test_Phase:
@@ -84,7 +82,6 @@ Actions:
         - Run: |
             echo "Running unit tests"
             python -m pytest
-            true
         - Run: |
             echo "Running bandit vulnerability scanner"
             bandit -r . --format sarif --output junit/bandit.sarif
@@ -96,10 +93,11 @@ Actions:
             chmod +x ./tfsec
             ./tfsec . --format sarif > ../src/junit/tfsec.sarif
             true
+            
     Compute:
       Type: EC2
     DependsOn:
-      - Build_Phase
+      - Init
   Deploy_Terraform_to_DEV:
     Identifier: aws/build@v1
     Outputs:
@@ -132,7 +130,7 @@ Actions:
             terraform init
         - Run: |
             echo "Running Terraform Plan"
-            terraform plan
+            terraform plan -no-color
         - Run: |
             echo "Running Terraform Apply"
             terraform apply --auto-approve -no-color
