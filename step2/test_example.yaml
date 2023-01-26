@@ -36,6 +36,8 @@ Actions:
     Inputs:
       Sources:
         - WorkflowSource
+      Artifacts:
+        - pythonLibs
     Outputs:
       AutoDiscoverReports:
         Enabled: false
@@ -67,3 +69,4 @@ Actions:
       Type: EC2
     DependsOn:
       - Init
+      
