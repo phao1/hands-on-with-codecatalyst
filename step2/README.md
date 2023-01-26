@@ -197,7 +197,12 @@ with
 8. OK, so we should now have a successful run, so let's review what happened. Firstly, in the run results, click on `Artifacts`, and we should see an artifact containing `pythonLibs`
 
 ![artifacts](../images/ex2-artifacts.png)
+
 9. If we now click on `Visual`, we can open the `Test_Phase` action and review the steps which should all show as successful. We can click up the individual items and check the outputs.
 
 ![visual](../images/ex2-visual.png)
-10. 
+
+10. And finally, we can click on `Reports`, and we can see the reports we generated - we're interested in the ones highlighted in the image below
+![reports](../images/ex2-reports.png)
+
+**Hopefully, everything has worked has expected, please shout if not. Otherwise, let's move to step 3 and try deploying the code and infrastructure to an AWS account.**
