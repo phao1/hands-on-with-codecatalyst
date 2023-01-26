@@ -194,3 +194,10 @@ with
 
 ![run-history](../images/ex2-first-run-history.png)
 
+8. OK, so we should now have a successful run, so let's review what happened. Firstly, in the run results, click on `Artifacts`, and we should see an artifact containing `pythonLibs`
+
+![artifacts](../images/ex2-artifacts.png)
+9. If we now click on `Visual`, we can open the `Test_Phase` action and review the steps which should all show as successful. We can click up the individual items and check the outputs.
+
+![visual](../images/ex2-visual.png)
+10. 
