@@ -29,3 +29,20 @@ Actions:
             pip install --user -r requirements.txt
     Compute:
       Type: EC2
+  Test_Phase:
+    Identifier: aws/managed-test@v1
+    Inputs:
+      Sources:
+        - WorkflowSource
+    Outputs:
+      AutoDiscoverReports:
+        Enabled: false
+        ReportNamePrefix: rpt
+    Configuration:
+      Steps:
+        - Run: |
+            python -m pytest --help
+    Compute:
+      Type: EC2
+    DependsOn:
+      - Init
