@@ -1,0 +1,31 @@
+Name: Example
+SchemaVersion: "1.0"
+
+# Optional - Set automatic triggers.
+Triggers:
+  - Type: Push
+    Branches:
+      - main
+
+# Required - Define action configurations.
+Actions:
+  Init:
+    Identifier: aws/build@v1
+    Inputs:
+      Sources:
+        - WorkflowSource
+    Outputs:
+      AutoDiscoverReports:
+        Enabled: true
+        ReportNamePrefix: rpt
+    Configuration:
+      Steps:
+        - Run: |-
+            echo "Install required environment libraries on ${HOSTNAME}"
+            pip install --user -r env_requirements.txt
+        - Run: |-
+            echo "Install required code libraries"
+            cd src
+            pip install --user -r requirements.txt
+    Compute:
+      Type: EC2
