@@ -18,6 +18,10 @@ Actions:
       AutoDiscoverReports:
         Enabled: true
         ReportNamePrefix: rpt
+      Artifacts:
+        - Name: pythonLibs
+          Files:
+            - /root/.local/**/*
     Configuration:
       Steps:
         - Run: |-
@@ -34,6 +38,8 @@ Actions:
     Inputs:
       Sources:
         - WorkflowSource
+      Artifacts:
+        - pythonLibs
     Outputs:
       AutoDiscoverReports:
         Enabled: false
@@ -41,7 +47,24 @@ Actions:
     Configuration:
       Steps:
         - Run: |
-            python -m pytest --help
+            echo "Copying artifacts from build on ${HOSTNAME}"
+            mv ${CATALYST_SOURCE_DIR_pythonLibs}/root/.local ~
+            export PATH=$PATH:$HOME/.local/bin
+            cd src
+        - Run: |
+            echo "Running unit tests"
+            python -m pytest
+        - Run: |
+            echo "Running bandit vulnerability scanner"
+            bandit -r . --format sarif --output junit/bandit.sarif
+            true    # Ignore failures flagged by bandit
+        - Run: |
+            echo "Installing and running tfsec"
+            cd ../terraform
+            wget https://github.com/aquasecurity/tfsec/releases/download/v1.28.1/tfsec-linux-amd64 -O tfsec
+            chmod +x ./tfsec
+            ./tfsec . --format sarif > ../src/junit/tfsec.sarif
+            true
     Compute:
       Type: EC2
     DependsOn:
